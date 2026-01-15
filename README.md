@@ -45,15 +45,17 @@ Because developing in the preview environment is :poop:.
     ```sql
     update message_queue_candidates set published = now();
     ```
-5. Build this project:
+5. Run the `sql/wa-case-event-messages.sql` script in the datastore database.
+
+6. Build this project:
    ```bash
    ./gradlew assemble
     ```
-6. Run docker compose:
+7. Run docker compose:
    ```bash
    docker compose up -d
    ```
-7. Import your Camunda definition files
+8. Import your Camunda definition files
    ```bash
    ./bin/import-camunda-definitions.sh
    ```
