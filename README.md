@@ -59,3 +59,34 @@ Because developing in the preview environment is :poop:.
    ```bash
    ./bin/import-camunda-definitions.sh
    ```
+
+## Troubleshooting
+1. WA Task Generation
+   
+   If WA tasks are not being generated, check your docker logs for message_state_enum errors. If found, run these scripts to recreate the table schema:
+```
+ drop TABLE public.wa_case_event_messages
+```
+```
+CREATE TYPE message_state_enum as ENUM ('NEW', 'READY', 'PROCESSED', 'UNPROCESSABLE');
+```
+
+```
+CREATE TABLE public.wa_case_event_messages(
+      message_id text NOT NULL PRIMARY KEY,
+      sequence serial,
+      case_id text NOT NULL,
+      event_timestamp timestamp,
+      from_dlq boolean NOT NULL DEFAULT false,
+      state message_state_enum NOT NULL,
+      message_properties jsonb,
+      message_content text,
+      received timestamp NOT NULL,
+      delivery_count integer NOT NULL DEFAULT 1,
+      hold_until timestamp,
+      retry_count integer NOT NULL DEFAULT 0
+);
+```
+
+After restarting all the pods you should now see WA tasks being generated.
+   
